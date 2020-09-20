@@ -452,7 +452,9 @@ else c.ToString()
 ### fsharp_max_infix_operator_expression
 
 Control the maximum length for which infix expression can be on one line.
-Default = 50.
+Default = 50. Requires `fsharp_infix_operator_expression_multiline_formatter` to
+be `character_width` to take effect.
+
 
 `defaultConfig`
 
@@ -470,10 +472,88 @@ let WebApp =
     >=> text "pong"
 ```
 
+### fsharp_max_infix_operator_expression_size
+
+Control the maximum number of operators for which infix expression can be on one
+line. Default 1. Requires `fsharp_infix_operator_expression_multiline_formatter`
+to be `logical_size` to take effect.
+
+`defaultConfig`
+
+```fsharp
+let WebApp =
+    route "/ping" >=> authorized >=> text "pong"
+
+x |> f |> g
+
+x |> f |> g |> h
+```
+
+`{ defaultConfig with MaxInfixOperatorExpressionSize = 2;
+InfixOperatorExpressionMultlineFormatter = MultilineFormatterType.LogicalSize }`
+
+```fsharp
+let WebApp =
+    route "/ping"
+    >=> authorized
+    >=> text "pong"
+
+x |> f |> g
+
+x
+|> f
+|> g
+|> h
+```
+
+### fsharp_infix_operator_expression_mutliline_formatter
+
+Split infix operator expressions into multiple lines based on the given
+condition. `character_width` uses character count of the expression, controlled
+by `fsharp_max_infix_operator_expression`. `logical_size` uses the number of
+infix operators in the expression, controlled by
+`fsharp_max_infix_operator_expression_size`. Default `character_width`.
+
+`defaultConfig`
+
+```fsharp
+let WebApp =
+    route "/ping" >=> authorized >=> text "pong"
+
+x
+|> aVeryLongFunctionNameThatGoesOnAndOnForeverAlmost
+
+x |> f |> g
+
+x |> f |> g |> h
+```
+
+`{ defaultConfig with InfixOperatorExpressionMultlineFormatter =
+MultilineFormatterType.LogicalSize }`
+
+```fsharp
+let WebApp =
+    route "/ping"
+    >=> authorized
+    >=> text "pong"
+
+x |> aVeryLongFunctionNameThatGoesOnAndOnForeverAlmost
+
+x
+|> f
+|> g
+
+x
+|> f
+|> g
+|> h
+```
+
+
 ### fsharp_max_record_width
 
 Control the maximum width for which records should be in one line. Default = 40.
-Requires `fsharp_reocrd_multiline_formatter` to be `character_width` to take
+Requires `fsharp_record_multiline_formatter` to be `character_width` to take
 effect.
 
 `defaultConfig`

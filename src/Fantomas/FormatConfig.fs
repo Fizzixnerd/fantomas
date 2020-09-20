@@ -45,7 +45,9 @@ type FormatConfig =
       IndentOnTryWith: bool
       SpaceAroundDelimiter: bool
       MaxIfThenElseShortWidth: Num
+      InfixOperatorExpressionMultilineFormatter: MultilineFormatterType
       MaxInfixOperatorExpression: Num
+      MaxInfixOperatorExpressionSize: Num
       MaxRecordWidth: Num
       MaxRecordSize: Num
       RecordMultilineFormatter: MultilineFormatterType
@@ -81,7 +83,9 @@ type FormatConfig =
           IndentOnTryWith = false
           SpaceAroundDelimiter = true
           MaxIfThenElseShortWidth = 40
+          InfixOperatorExpressionMultilineFormatter = CharacterWidth
           MaxInfixOperatorExpression = 50
+          MaxInfixOperatorExpressionSize = 1
           MaxRecordWidth = 40
           MaxRecordSize = 1
           RecordMultilineFormatter = CharacterWidth

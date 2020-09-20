@@ -64,6 +64,12 @@ let internal getArrayOrListSize ctx xs =
     | MultilineFormatterType.CharacterWidth -> Size.CharacterWidth(0, ctx.Config.MaxArrayOrListWidth)
     | MultilineFormatterType.LogicalSize -> Size.LogicalSize(List.length xs, ctx.Config.MaxArrayOrListSize)
 
+let internal getInfixOperatorExpressionSize ctx es =
+    match ctx.Config.InfixOperatorExpressionMultilineFormatter with
+    // isSmallExpression will find the character width and use that, so we just pass 0 here
+    | MultilineFormatterType.CharacterWidth -> Size.CharacterWidth(0, ctx.Config.MaxInfixOperatorExpression)
+    | MultilineFormatterType.LogicalSize -> Size.LogicalSize(List.length es, ctx.Config.MaxInfixOperatorExpressionSize)
+
 let rec addSpaceBeforeParensInFunCall functionOrMethod arg (ctx: Context) =
     match functionOrMethod, arg with
     | SynExpr.TypeApp (e, _, _, _, _, _, _), _ -> addSpaceBeforeParensInFunCall e arg ctx
@@ -1780,7 +1786,7 @@ and genExpr astContext synExpr =
 
         let expr = genExpr astContext e
 
-        let shortExpr =
+        let smallExpr =
             expr
             +> sepAfterExpr sepSpace
             +> genInfixAppsShort astContext es
@@ -1795,7 +1801,9 @@ and genExpr astContext synExpr =
                || List.exists (fun (_, _, e) -> isLambda e) es then
                 longExpr ctx
             else
-                isShortExpression ctx.Config.MaxInfixOperatorExpression shortExpr longExpr ctx)
+                let size = getInfixOperatorExpressionSize ctx es
+
+                isSmallExpression size smallExpr longExpr ctx)
 
     | TernaryApp (e1, e2, e3) ->
         atCurrentColumn

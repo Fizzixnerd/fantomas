@@ -240,3 +240,37 @@ f
 
 g s' {| s with AReallyLongExpressionThatIsMuchLongerThan50Characters = 1 |}
 """
+
+[<Test>]
+let ``logically sized infix operator expressions are formatted properly`` () =
+    formatSourceString false """
+let WebApp =
+    route "/ping" >=> authorized >=> text "pong"
+
+x
+|> aVeryLongFunctionNameThatGoesOnAndOnForeverAlmost
+
+x |> f |> g
+
+x |> f |> g |> h
+    """
+        { config with
+              InfixOperatorExpressionMultilineFormatter = LogicalSize }
+    |> prepend newline
+    |> should equal """
+let WebApp =
+    route "/ping"
+    >=> authorized
+    >=> text "pong"
+
+x |> aVeryLongFunctionNameThatGoesOnAndOnForeverAlmost
+
+x
+|> f
+|> g
+
+x
+|> f
+|> g
+|> h
+"""
